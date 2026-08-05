@@ -1,0 +1,32 @@
+name: Run Backtest
+
+on:
+  workflow_dispatch:
+    inputs:
+      symbol:
+        description: 'Trading pair'
+        default: 'BTC/USD'
+      timeframe:
+        description: 'Candle size'
+        default: '1h'
+      days:
+        description: 'Days of history'
+        default: '180'
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run backtest
+        run: python backtest.py --symbol "${{ github.event.inputs.symbol }}" --timeframe "${{ github.event.inputs.timeframe }}" --days "${{ github.event.inputs.days }}"
